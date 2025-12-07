@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Recipe Manager UI - Recipes</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Recipe Manager UI</h1>
+  <nav>
+    <a href="/recipes">Recipes</a>
+    <a href="/ingredients">Ingredients</a>
+    <a href="/recipeingredients">Recipe + Ingredients</a>
+  </nav>
+
+  <% if (message) { %>
+    <div class="msg"><%= message %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="err"><%= error %></div>
+  <% } %>
+
+  <h2>Recipes</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Instructions</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% (recipes || []).forEach(function(r) { %>
+        <tr>
+          <td>
+            <form class="inline" method="POST" action="/recipes/<%= r.id %>/update">
+              <input type="text" name="name" value="<%= r.name %>" />
+          </td>
+          <td>
+              <input type="text" name="instructions" value="<%= r.instructions %>" />
+          </td>
+          <td>
+              <button type="submit">Save</button>
+            </form>
+            <form class="inline" method="POST" action="/recipes/<%= r.id %>/delete">
+              <button type="submit">Delete</button>
+            </form>
+            <form class="inline" method="POST" action="/recipes/<%= r.id %>/cook">
+              <button type="submit">Cook</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <h3>Add Recipe</h3>
+  <form method="POST" action="/recipes">
+    <input type="text" name="name" placeholder="Name" required />
+    <input type="text" name="instructions" placeholder="Instructions" required />
+    <button type="submit">Save</button>
+  </form>
+</body>
+</html>

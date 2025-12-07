@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Recipe Manager UI - Recipe + Ingredients</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Recipe Manager UI</h1>
+  <nav>
+    <a href="/recipes">Recipes</a>
+    <a href="/ingredients">Ingredients</a>
+    <a href="/recipeingredients">Recipe + Ingredients</a>
+  </nav>
+
+  <% if (message) { %>
+    <div class="msg"><%= message %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="err"><%= error %></div>
+  <% } %>
+
+  <h2>Recipe + Ingredients</h2>
+
+  <form method="GET" action="/recipeingredients">
+    <label for="recipeid">Select recipe:</label>
+    <select name="recipeid" id="recipeid" onchange="this.form.submit()">
+      <% (recipes || []).forEach(function(r) { %>
+        <option value="<%= r.id %>" <%= String(selectedRecipeId) === String(r.id) ? 'selected' : '' %>>
+          <%= r.name %>
+        </option>
+      <% }); %>
+    </select>
+    <noscript><button type="submit">Load</button></noscript>
+  </form>
+
+  <% if (selectedRecipeId) { %>
+    <h3>Ingredients for this recipe</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Ingredient</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% (recipeIngredients || []).forEach(function(ri) { %>
+          <tr>
+            <td><%= ri.ingredientname || ('Ingredient #' + (ri.ingredientid || '')) %></td>
+            <td><%= ri.amount %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <h3>Add Ingredient to Recipe</h3>
+    <form method="POST" action="/recipeingredients">
+      <input type="hidden" name="recipeid" value="<%= selectedRecipeId %>" />
+      <label for="ingredientid">Ingredient:</label>
+      <select name="ingredientid" id="ingredientid" required>
+        <% (ingredients || []).forEach(function(i) { %>
+          <option value="<%= i.id %>"><%= i.ingredientname %></option>
+        <% }); %>
+      </select>
+
+      <label for="amount">Amount:</label>
+      <input type="number" name="amount" id="amount" required />
+
+      <button type="submit">Add</button>
+    </form>
+  <% } else { %>
+    <p>No recipes found. Please add a recipe first.</p>
+  <% } %>
+</body>
+</html>
